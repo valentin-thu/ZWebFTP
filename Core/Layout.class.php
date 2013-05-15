@@ -117,13 +117,22 @@
 			$class = 'Applications_'.$this->_appli.'_Controllers_'.$controller.'Controller';
 			$method = $action.'Action';
 			$Controller = new $class();
-		
-			$bootstrapName = 'Applications_'.$this->_appli.'_Bootstrap';
+			
+			$bootstrapName = 'Applications_Bootstrap';
 			$Bootstrap = new $bootstrapName();
-		
+			
 			foreach(get_class_methods($Bootstrap) as $initFunction){
 				if(preg_match('#^_init#', $initFunction)){
 					$Bootstrap->$initFunction();
+				}
+			}
+			
+			$bootstrapNameApp = 'Applications_'.$this->_appli.'_Bootstrap';
+			$BootstrapApp = new $bootstrapNameApp();
+		
+			foreach(get_class_methods($BootstrapApp) as $initFunctionApp){
+				if(preg_match('#^_init#', $initFunctionApp)){
+					$BootstrapApp->$initFunctionApp();
 				}
 			}
 		

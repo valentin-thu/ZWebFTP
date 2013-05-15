@@ -51,7 +51,7 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 		
 		$this->assign('plop', 'testpLop');
 
-
+		
 		/*$db = new Core_DbTable_Select();
 		$db->where('(login = :logion', 'plop')
 		   ->where('pass = :pass AND mail = :mail)', array('sdf', 'dgfdg'))
