@@ -26,4 +26,13 @@ class Models_Utilisateurs extends Core_DataBase
 		
 		return $_SESSION['AUTH'];
 	}
+	
+	public function test(){
+		$query = 'SELECT * FROM test';
+		$sql = $this->bdd->prepare($query);
+		$sql->execute();
+		
+		$objet = $sql->fetchAll(PDO::FETCH_CLASS, 'Models_Test');
+		return $objet;
+	}
 }

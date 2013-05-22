@@ -5,7 +5,7 @@
 	 * @author Valentin
 	 *
 	 */
-	class Core_DbTable_Select{	
+	class Core_DbTable_ORM extends Core_DataBase{	
 		protected $_order;
 		protected $_select;
 		protected $_from;

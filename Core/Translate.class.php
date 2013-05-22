@@ -12,15 +12,15 @@
 		
 		public function __construct($lang){
 			$this->_language = $lang;
-			$this->getResource();
+			//$this->getResource();
 		}
 		
 		/**
 		 * Récupère les messages de l'application selon la langue choisie
 		 */
-		private function getResource(){
+		public function getResource(){
 			$this->_resource = require_once('../Resources/Languages/'.$this->_language.'/translate.php');
-			Core_Registry::set('Translate', $this, 'RESOURCES');
+			return $this;
 		}
 		
 		/**

@@ -11,8 +11,4 @@
 			$this->headTitle()->setTitle('Bootstrap');
 		}
 		
-		public function _initTranslate(){
-			$resource = new Core_Translate('fr');
-		}
-		
 	}
