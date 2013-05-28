@@ -11,8 +11,18 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 	public function indexAction(){
 		
 		$testTa = new Models_Test();
-		$test1 = $testTa->test();
 		
+		$update = $testTa->find(1);
+		$update->lib = 'update4';
+		$update->save();
+		
+		$new = $testTa->create();
+		$new->lib = 'new5';
+		Core_Debug::dump($new->save());
+
+		//$plop2 = $testTa->testFrom2();
+		
+		//Core_Debug::dump($plop);
 		
 		
 		/*$newRow = $testTa->create();
@@ -25,10 +35,10 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 		//Core_Debug::print_r($test1->lib);
 		//Core_Debug::print_r($test1->vars());
 		//$test1->save();
-		foreach($test1 as $row){
-			Core_Debug::dump($row);
-		//$row->lib = 'plopy';
-		}
+		/*foreach($test1 as $row){
+			Core_Debug::dump($row->lib);
+			$row->lib = 'plopy';
+		}*/
 		/*
 		Core_Debug::dump($row->lib);
 		Core_Debug::print_r($testTa->vars());*/
@@ -66,7 +76,7 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 		$form->addElement($submit);
 		$form->addElement($check);
 		
-		Core_Debug::print_rJS($form);
+		//Core_Debug::print_rJS($form);
 		
 		
 		if($this->getRequest()->hasParam('login')){

@@ -1,6 +1,10 @@
 <?php
 	
 	class Models_Test extends Core_DbTable_ORM{
+		
+		public $_name = 'test';
+		public $_primary = 'id';
+		
 		/*public $id;
 		public $lib;
 		
@@ -15,16 +19,33 @@
 		//private $_rows;
 		
 		public function test(){
+			$req = $this->select()
+						->from($this);
 			
-			return $this->fetch('SELECT * FROM test WHERE id = 1');
-			/*$query = 'SELECT * FROM test WHERE id = 1';
-			$sql = $this->bdd->prepare($query);
-			$sql->setFetchMode(PDO::FETCH_CLASS, 'Models_Test');
-			$sql->execute();
+			return $req->fetchAll();
+		}
+		
+		public function testFrom2(){
+			$plop = $this->select()
+						->from(array('qqsdsd AS plop'), array('qsdazqsdaze2' => 'qsd', 'sqdqsd'))
+						->join('Ville', 'vil.id = sd.id', array('qsd', 'plo'=>'sqdsqd'))
+						->where(' sdqsd = :sd  AND  plop = :rez AND qsd ', array('sdsd', 'pspdl'), array('str', 'int'));
 			
+			return $plop;
+		}
+		
+		public function testFrom(){
 			
-			$this->_rows = $sql->fetch();*/
-			//return $this->_rows;
+			$req = $this->select()
+						->from('plop')
+						->where('id = :id', '5', 'int');
+			
+			$plop = $this->select(array('sqdfd', 'szrr'))
+						->from(array('qsd AS plop'), array('qsdqsdaze2' => 'qsd', 'sqdqsd'))
+						->join('Ville', 'vil.id = sd.id', array('qsd', 'plo'=>'sqdsqd'))
+						->where(' sdqsd = :sd  AND  plop = :rez AND qsd NOT IN(:in) ', array('sdsd', 'pspdl', $req), array('str'));
+			$req->getBindParam();
+			return $plop;
 		}
 		
 		public function current(){
