@@ -31,6 +31,10 @@
 			
 			return '<label '.$for.$attribs.'>'.$this->_nameLabel.'</label>';
 		}
+		
+		public function __toString(){
+			return $this->renderElement();
+		}
 	}
 
 ?>

@@ -10,16 +10,6 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 	
 	public function indexAction(){
 		
-		$testTa = new Models_Test();
-		
-		$update = $testTa->find(1);
-		$update->lib = 'update4';
-		$update->save();
-		
-		$new = $testTa->create();
-		$new->lib = 'new5';
-		Core_Debug::dump($new->save());
-
 		//$plop2 = $testTa->testFrom2();
 		
 		//Core_Debug::dump($plop);
@@ -91,23 +81,6 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 		
 		$this->assign('plop', 'testpLop');
 
-		
-	/*	$db = new Core_DbTable_Select();
-		$db->where('login = :logion', 'plop')
-		   ->where('pass = :pass AND mail = :mail', array('sdf', 'dgfdg'))
-		   ->orWhere('(pqsd = :sdf', 'dfdf')
-		   ->orWhere('pqsd = :sdf)', 'dfdf');*/
-		
-
-		//$sdf = $dsfsdf->where('login = :logion AND pass = :password AND sdd = :dfgg', array($login, $pass, $xwc));
-		
-		//getKey('login = :logion AND pass = :password AND sdd = :dfgg');
-		/*echo '<pre>';
-		echo print_r($db->getWhere());
-		echo '</pre>';
-		echo '<pre>';
-		echo print_r($db->getTabKey());
-		echo '</pre>';*/
 	}
 	
 	public function errorAction(){

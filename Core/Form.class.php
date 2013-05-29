@@ -18,7 +18,7 @@
 		 * @param Core_Form_Element $element
 		 */
 		public function addElement($element){
-			array_push($this->_tabElement, $element);
+			$this->_tabElement[$element->getName()] = $element;
 		}
 		
 		/**
@@ -95,10 +95,19 @@
 		
 		/**
 		 * Retourne tous les éléments du formulaire
-		 * @return multitype:
+		 * @return array
 		 */
 		public function getElements(){
 			return $this->_tabElement;
+		}
+		
+		/**
+		 * Retourne un élément selon son attribut name
+		 * @param string $name
+		 * @return Core_Form_Element
+		 */
+		public function getElement($name){
+			return $this->_tabElement[$name];
 		}
 		
 		/**
@@ -130,7 +139,7 @@
 		
 		/**
 		 * Ajoute un decorator au formulaire
-		 * @param unknown $decorator
+		 * @param string $decorator
 		 */
 		public function addDecorator($decorator){
 			$this->_decorator = $decorator;
@@ -143,13 +152,17 @@
 		 */
 		public function render($populate = false){
 			if($this->_decorator != null){
-				$theDecorator = 'Core_Form_Decorator_'.$this->_decorator;
+				$theDecorator = $this->_decorator;
 				$decorator = new $theDecorator($this, $populate);
 				return $decorator->render();
 			}else{
 				$decorator = new Core_Form_Decorator_TableWrapper($this, $populate);
 				return $decorator->render();
 			}
+		}
+		
+		public function __toString(){
+			return $this->render();
 		}
 		
 	}

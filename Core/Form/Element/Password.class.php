@@ -38,6 +38,10 @@
 			
 			return '<input type="'.$this->_type.'" name="'.$this->_name.'" '.$value.' '.$attribs.'/>';
 		}
+		
+		public function __toString(){
+			return $this->renderElement();
+		}
 	}
 
 ?>

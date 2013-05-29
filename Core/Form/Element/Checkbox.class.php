@@ -45,6 +45,10 @@
 
 			return $theCheckboxs;
 		}
+		
+		public function __toString(){
+			return $this->renderElement();
+		}
 	}
 
 ?>

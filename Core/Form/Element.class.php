@@ -67,6 +67,10 @@
 			return ($httpRequest->hasParam($this->_name)) ? $httpRequest->getParam($this->_name) : null; 
 		}
 		
+		public function hasValue(){
+			return ($this->getValue() != '') ? true : false;
+		}
+		
 		/**
 		 * Retourne l'attribut VALUE
 		 */

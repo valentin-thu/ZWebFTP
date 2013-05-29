@@ -1,7 +1,7 @@
 <?php
 
 	/**
-	 * Crée les requête SELECT
+	 * Class permettant d'exécuter des requêtes SQL
 	 * @author Valentin
 	 *
 	 */

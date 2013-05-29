@@ -14,4 +14,11 @@
 			Core_Registry::set('Translate', $translate, 'RESOURCES');
 		}
 		
+		public function _initHeader(){
+			$this->headLink()->appendFile('Css/ResetCSS.css');
+			$this->headLink()->appendFile('Css/Library.css');
+			$this->headDoctype()->setDoctype('HTML5');
+			$this->headMeta()->setCharset('UTF-8');
+		}
+		
 	}

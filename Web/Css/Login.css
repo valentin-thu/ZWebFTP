@@ -1,5 +1,18 @@
 @CHARSET "UTF-8";
 
-body{
-	background:url('../Images/Login/background.png') no-repeat fixed center;
-}
+html{background:url('../Images/Login/background.png') no-repeat fixed center; background-size:cover;}
+
+#Login{width:608px; height:409px; margin: 0 auto 0 auto; background:url('../Images/Login/background-form.png') no-repeat bottom; padding-top:250px;}
+	.Login-header{position:relative; top:-40px; left:-20px;}
+	.Login-header img{float:left; margin-right:10px;}
+		.Login-header-title h3 {display:inline; font-family:'Aladin'; position: relative; font-size: 5em; text-shadow: 0px 0px 10px #828282;}
+		.Login-header-title h3 span {position: absolute; top: 0; z-index: 2; color: #fff; -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(228,228,228,1)), to(rgba(228,228,228,0)));}
+		.Login-header-title h3:after {content: "ZWebFTP"; color: #e4e4e4;}
+	
+	.Login-formLogin{margin-left:40px;}
+		.Login-formLogin-input{color:#696969;font-family:'Source Sans Pro';padding-left:26px;font-size:25px;height:60px;width:480px;border-radius:25px;border:3px #e3e3e3 solid;box-shadow:2px 2px 3px #7c7c7c;margin-bottom:10px;outline:none;}
+		.Login-formLogin-input::-webkit-input-placeholder{color:#696969;}
+		
+		.Login-formLogin-btn{background:url('../Images/Login/btn-Login.png');border:none;width:192px;height:50px;}
+		.Login-formLogin-btn:hover{background-position:left -50px;}
+		.Login-formLogin-btn:active{background-position:left -100px;}

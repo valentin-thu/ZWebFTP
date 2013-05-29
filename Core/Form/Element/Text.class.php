@@ -27,7 +27,20 @@
 		 * @return string
 		 */
 		public function renderElement(){
-			$value = ($this->_value != '') ? 'value="'.$this->_value.'"' : '';
+
+			if($this->hasValue()){
+				if(!$this->hasError()){
+					$value = 'value="'.$this->getValue().'"';
+				}else{
+					$value = '';
+				}
+			}else{
+				if($this->_value != ''){
+					$value = 'value="'.$this->_value.'"';
+				}else{
+					$value = '';
+				}
+			}
 			
 			$attribs = '';
 			if(count($this->_attribs) != 0){
@@ -37,6 +50,10 @@
 			}
 			
 			return '<input type="'.$this->_type.'" name="'.$this->_name.'" '.$value.' '.$attribs.'/>';
+		}
+		
+		public function __toString(){
+			return $this->renderElement();
 		}
 	}
 
