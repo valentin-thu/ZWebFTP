@@ -49,9 +49,11 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 		$login->setAttrib('placeholder', 'Votre login');
 		$login->addValidator('Email');
 		
+		
 		$pass = new Core_Form_Element_Text('pass');
 		$pass->setAttrib('class', 'classPass');
 		$pass->setValue('Mon pass');
+		$login->addValidator('DbLogin', $pass);
 		
 		$check = new Core_Form_Element_Checkbox('cookie');
 		$check->addMultiOption('oui', 'Se souvenir de moi');

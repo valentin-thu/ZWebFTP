@@ -19,9 +19,12 @@
 			
 			$eLogin->setAttrib('placeholder', 'Votre pseudonyme');
 			$eLogin->setAttrib('class', 'Login-formLogin-input Login-formLogin-login');
+			$eLogin->addValidator('Required');
 			
 			$ePassword->setAttrib('placeholder', 'Votre mot de passe');
 			$ePassword->setAttrib('class', 'Login-formLogin-input Login-formLogin-password');
+			$ePassword->addValidator('Required');
+			$ePassword->addValidator('DbLogin', $eLogin);
 			
 			$eSouvenir->addMultiOption('oui', 'Se souvenir de moi');
 			

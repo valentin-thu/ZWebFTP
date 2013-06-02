@@ -124,11 +124,16 @@
 		 * Ajoute un validator à l'élément
 		 * @param string $validator
 		 */
-		public function addValidator($validator){
+		public function addValidator($validator, $add2 = null){
 			$validatorClass = 'Core_Form_Validator_'.$validator;
 			if(class_exists($validatorClass, true)){
-				$theValidator = new $validatorClass($this);
-				array_push($this->_validators, $theValidator);
+				if($validator == 'DbLogin'){
+					$theValidator = new $validatorClass($this, $add2);
+					array_push($this->_validators, $theValidator);
+				}else{
+					$theValidator = new $validatorClass($this);
+					array_push($this->_validators, $theValidator);
+				}
 			}
 		}
 		

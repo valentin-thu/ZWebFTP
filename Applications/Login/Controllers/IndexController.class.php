@@ -12,7 +12,11 @@ class Applications_Login_Controllers_IndexController extends Core_Controllers{
 		$formLogin = new Form_Login();
 		
 		if($this->getRequest()->hasParam('login')){
-			
+			if($formLogin->isValid()){
+				echo 'oui';
+			}else{
+				echo $this->assign('formLogin', $formLogin->populate());
+			}
 		}else{
 			$this->assign('formLogin', $formLogin);
 		}

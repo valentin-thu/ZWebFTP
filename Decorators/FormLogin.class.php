@@ -24,7 +24,13 @@
 			$html .= '<tr><td>'.$tabElement->login.'</tr></td>';
 			$html .= '<tr><td>'.$tabElement->password.'</tr></td>';
 			$html .= '<tr><td style="padding-left:10px;padding-top:20px;">'.$tabElement->souvenir.'</tr></td>';
-			$html .= '<tr><td style="text-align:center;padding-top:65px;">'.$tabElement->connexion.'</tr></td>';
+			$html .= '<tr><td style="text-align:center;color:red;">'.$tabElement->password->getError().'</td></tr>';
+			
+			if($tabElement->password->hasError()){
+				$html .= '<tr><td style="text-align:center;padding-top:46px;">'.$tabElement->connexion.'</tr></td>';
+			}else{
+				$html .= '<tr><td style="text-align:center;padding-top:65px;">'.$tabElement->connexion.'</tr></td>';
+			}
 			
 			$html .= '</table>';
 			$html .= '</form>';

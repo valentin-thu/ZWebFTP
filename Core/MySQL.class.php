@@ -5,7 +5,7 @@
 	 * @author Valentin
 	 *
 	 */
-	class Core_MySQL implements Core_ISQL{
+	class Core_MySQL{
 		private $_bdd;
 		private static $instance = null;
 		

@@ -384,8 +384,12 @@
 		 * @return Core_DbTable_Select
 		 */
 		public function where($condition, $value, $typage = null){
-			if($this->_where != 'WHERE'){
+			if($this->_where != 'WHERE' && $this->_where != ''){
 				$this->_where .= 'AND';
+			}
+			
+			if($this->_where == ''){
+				$this->_where = 'WHERE';
 			}
 			
 			$this->_where .= ' (';
