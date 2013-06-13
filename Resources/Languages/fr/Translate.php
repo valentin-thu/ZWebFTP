@@ -8,5 +8,7 @@
 			//Core_Form_Validator
 			'VALIDATOR_EMAIL' 		=> 'Veuillez entrer une adresse e-mail valide.',
 			'VALIDATOR_REQUIRED' 	=> 'Ce champs est obligatoire.',
-			'VALIDATOR_DBLOGIN'		=> 'Les identifiants sont incorrects.'
+			
+			//Core_Auth
+			'AUTH_IDENTITY'			=> 'Les identifiants sont incorrects.'
 	);

@@ -21,7 +21,7 @@
 			if ($this->_value != ''){
 				return true;
 			}else{
-				return $this->_e('VALIDATOR_REQUIRED');
+				return _e('VALIDATOR_REQUIRED');
 			}
 		}
 		

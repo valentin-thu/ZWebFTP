@@ -13,7 +13,17 @@ class Applications_Login_Controllers_IndexController extends Core_Controllers{
 		
 		if($this->getRequest()->hasParam('login')){
 			if($formLogin->isValid()){
-				echo 'oui';
+				$auth = new Core_Auth('zwebftp_users', 'login_users', 'password_users');
+				$elts = (object)$formLogin->getElements();
+				
+				$auth->setIdentitys($elts->login->getValue(), $elts->password->getValue());
+				
+				if($auth->isValid() === true){
+					$this->redirect('accueil.html');
+				}else{
+					$formLogin->getElement('password')->setError($auth->isValid());
+					echo $this->assign('formLogin', $formLogin->populate());
+				}
 			}else{
 				echo $this->assign('formLogin', $formLogin->populate());
 			}

@@ -51,7 +51,7 @@
 		 * @param string $charset
 		 */
 		public function addMeta($charset){
-			array_push($this->_arrayMeta, '<meta charset="'.$charset.'">');
+			array_push($this->_arrayMeta, '<meta http-equiv="Content-Type" content="text/html; charset='.$charset.'" />');
 		}
 		
 		/**

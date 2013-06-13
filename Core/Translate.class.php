@@ -19,7 +19,7 @@
 		 * Récupère les messages de l'application selon la langue choisie
 		 */
 		public function getResource(){
-			$this->_resource = require_once('../Resources/Languages/'.$this->_language.'/translate.php');
+			$this->_resource = require_once('../Resources/Languages/'.$this->_language.'/Translate.php');
 			return $this;
 		}
 		

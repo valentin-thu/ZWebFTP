@@ -199,6 +199,14 @@
 		}
 		
 		/**
+		 * Définis une erreur à l'élément
+		 * @param string $error
+		 */
+		public function setError($error){
+			$this->_error = $error;
+		}
+		
+		/**
 		 * Ecris les différents attributs
 		 * @return string
 		 */

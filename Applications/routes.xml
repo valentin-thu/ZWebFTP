@@ -2,10 +2,11 @@
 <routes>
 	<!-- 
 	::::::: Les rôles ::::::::
-		Visiteur : 0
-		Administrateur : 1
+		Visiteurs : 1
+		Utilisateurs : 2
+		Administrateur : 3
 	::::::::::::::::::::::::::
 	-->
-	<route name="home" role="0,1" module="Login" controller="Index" action="index" uri="" var="" />	
-	<route name="accueil" role="0,1" module="Front" controller="Index" action="index" uri="accueil.html" var="" />	
+	<route name="home" role="1,2,3" module="Login" controller="Index" action="index" uri="" var="" />	
+	<route name="accueil" role="2,3" module="Front" controller="Index" action="index" uri="accueil.html" var="" />	
 </routes>

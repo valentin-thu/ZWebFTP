@@ -96,7 +96,7 @@
 		 */
 		public function redirect($uri){
 			if(!empty($uri)){
-				header('Location:'.$uri);
+				header('Location: '.$uri);
 				exit;
 			}
 		}

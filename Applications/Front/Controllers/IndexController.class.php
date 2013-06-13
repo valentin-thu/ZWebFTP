@@ -3,8 +3,7 @@
 class Applications_Front_Controllers_IndexController extends Core_Controllers{
 	
 	public function init(){
-		$this->headLink()->appendFile('sqdsqd.css')->appendFile('plop.css');
-		$this->headScript()->appendFile('sqdsqd.js');
+
 		$this->headTitle()->setTitle('Init');
 	}
 	
@@ -53,7 +52,6 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 		$pass = new Core_Form_Element_Text('pass');
 		$pass->setAttrib('class', 'classPass');
 		$pass->setValue('Mon pass');
-		$login->addValidator('DbLogin', $pass);
 		
 		$check = new Core_Form_Element_Checkbox('cookie');
 		$check->addMultiOption('oui', 'Se souvenir de moi');
@@ -69,24 +67,25 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 		$form->addElement($check);
 		
 		//Core_Debug::print_rJS($form);
-		
+		$identity = Core_Sessions::get('identity', 'AUTH');
+		Core_Debug::dump($identity->getStorage()->id_groups);
 		
 		if($this->getRequest()->hasParam('login')){
 			if($form->isValid()){
-				echo 'oui';
+			//	echo 'oui';
 			}else{
-				echo $form->populate();
+				//echo $form->populate();
 			}
 		}else{
-			echo $form->render();
+			//echo $form->render();
 		}
 		
-		$this->assign('plop', 'testpLop');
+	//	$this->assign('plop', 'testpLop');
 
 	}
 	
 	public function errorAction(){
-		echo 'plop';
+	//	echo 'plop';
 	}
 	
 }

@@ -17,10 +17,13 @@
 		public function __construct($appli){
 			$this->_appli = $appli;
 			$this->_uri = $_SERVER['REQUEST_URI'];
-			if(!isset($_SESSION['ROLE'])){
-				$_SESSION['ROLE'] = 0;
+			
+			$identity = Core_Sessions::get('identity', 'AUTH');
+			if($identity != null){
+				$this->_role = $identity->getStorage()->id_groups;	
+			}else{
+				$this->_role = 1;
 			}
-			$this->_role = $_SESSION['ROLE'];
 			
 			parent::__construct();
 		}
@@ -107,8 +110,8 @@
 					}
 				}
 			}
-		
-			if((empty($action) && empty($controller)) || !in_array($this->_role, $role) ){
+
+			if((empty($action) && empty($controller)) || !in_array($this->_role, $role)){
 				$controller = 'Index';
 				$action = 'error';
 			}
@@ -184,7 +187,7 @@
 	        $content = ob_get_clean();
 	        
 	        //Charge le layout où il y a le content de la vue
-	        ob_start();      
+	       // ob_start();      
 	        require_once $this->_layout;	
 		}
 	}

@@ -1,33 +1,46 @@
 <?php 
 
+	/**
+	 * Gére les sessions
+	 * @author Valentin
+	 *
+	 */
 	class Core_Sessions{
 		
-		public function get($session, $nameSpace = null){
+		/**
+		 * Retourne une variable session
+		 * @param string $key
+		 * @param string $nameSpace
+		 * @return string or NULL
+		*/
+		public static function get($key, $nameSpace = null){
+		
 			if($nameSpace == null){
-				if(isset($_SESSION[$session])){
-					return $_SESSION[$session];
+				if(isset($_SESSION[$key])){
+					return unserialize($_SESSION[$key]);
 				}
 			}else{
-				if(isset($_SESSION[$nameSpace][$session])){
-					return $_SESSION[$nameSpace][$session];
+				if(isset($_SESSION[$nameSpace][$key])){
+					return unserialize($_SESSION[$nameSpace][$key]);
 				}
 			}
 			
 			return null;
 		}
 		
-		public function set($session, $valueSession, $nameSpace = null){
-			
+		/**
+		 * Modifie une variable session
+		 * @param string $key
+		 * @param string $value
+		 * @param string $nameSpace
+		 */
+		public static function set($key, $value, $nameSpace = null){
+				
 			if($nameSpace == null){
-				$_SESSION[$session] = $valueSession;
+				$_SESSION[$key] = serialize($value);
 			}else{
-				$_SESSION[$nameSpace][$session] = $valueSession;
+				$_SESSION[$nameSpace][$key] = serialize($value);
 			}
-		
-		}
-		
-		public function issetSessions($session){
-			return (isset($session)) ? true : false;
 		}
 		
 	}

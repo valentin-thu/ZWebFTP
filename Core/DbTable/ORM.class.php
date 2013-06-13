@@ -449,7 +449,7 @@
 		 * @param string $query
 		 * @return mixed
 		 */
-		public function fetch($query = null){
+		public function fetch($query = null, $fetchMode = null){
 			
 			if($query === null){
 				$query = $this->toString();
@@ -461,7 +461,12 @@
 				$sql->bindParam($bind[0], $bind[1], $this->getPDOParam($bind[2]));
 			}
 			
-			$sql->setFetchMode(PDO::FETCH_CLASS, get_class($this));
+			if($fetchMode === null){
+				$sql->setFetchMode(PDO::FETCH_CLASS, get_class($this));
+			}else{
+				$sql->setFetchMode($fetchMode);
+			}
+			
 			$sql->execute();
 		
 		
@@ -711,4 +716,5 @@
 			
 			return $select.$from.$join.$where.$order.$limit;
 		}
+	
 	}

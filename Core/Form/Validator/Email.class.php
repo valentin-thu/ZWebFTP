@@ -21,7 +21,7 @@
 			if (preg_match('#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#', $this->_value)){
 				return true;
 			}else{
-				return $this->_e('VALIDATOR_EMAIL');
+				return _e('VALIDATOR_EMAIL');
 			}
 		}
 		

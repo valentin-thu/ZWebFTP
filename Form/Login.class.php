@@ -24,7 +24,7 @@
 			$ePassword->setAttrib('placeholder', 'Votre mot de passe');
 			$ePassword->setAttrib('class', 'Login-formLogin-input Login-formLogin-password');
 			$ePassword->addValidator('Required');
-			$ePassword->addValidator('DbLogin', $eLogin);
+			//$ePassword->addValidator('DbLogin', $eLogin);
 			
 			$eSouvenir->addMultiOption('oui', 'Se souvenir de moi');
 			
