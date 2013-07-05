@@ -17,6 +17,11 @@
 		public function _initHeader(){
 			$this->headLink()->appendFile('Css/ResetCSS.css');
 			$this->headLink()->appendFile('Css/Library.css');
+			$this->headLink()->appendFile('Css/jQuery-UI.css');
+			$this->headScript()->appendFile('Js/jQuery.js');
+			$this->headScript()->appendFile('Js/jQuery-UI.js');
+			$this->headScript()->appendFile('Js/jQuery-UI-Fr.js');
+			$this->headScript()->appendFile('Js/Library.js');
 			$this->headDoctype()->setDoctype('HTML5');
 			$this->headMeta()->setCharset('UTF-8');
 		}

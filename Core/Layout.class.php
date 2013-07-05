@@ -13,6 +13,8 @@
 		protected $_vars;
 		protected $_appli;
 		protected $_role;
+		protected $_renderer = false;
+		protected $_rendererLayout = false;
 		
 		public function __construct($appli){
 			$this->_appli = $appli;
@@ -152,8 +154,11 @@
 				$this->_layout = $this->_appli;
 			}
 		
-			$this->setLayout($this->_layout);
-		
+			if($Controller->isRendererLayout()){
+				$this->_rendererLayout = true;
+				$this->setLayout($this->_layout);
+			}
+
 			//Charge les variables à transmettre à la vue
 			if($Controller->hasVars()){
 				$this->_vars = $Controller->getVars();
@@ -170,8 +175,61 @@
 		
 			$this->_view = $action;
 			$this->_controller = $controller;
+			
+			if($Controller->isRenderer()){
+				$this->_renderer = true;
+				$this->setView($this->_appli, $this->_controller, $this->_view);
+			}
+			
+			
+		}
 		
-			$this->setView($this->_appli, $this->_controller, $this->_view);
+		
+		/**
+		 * Charge un partial
+		 * @param string $namePartial
+		 * @param string $controller
+		 * @param string $action
+		 * @return string
+		 */
+		public function partial($namePartial, $appli = null){
+			
+			$appliDir = ($appli != null) ? $appli : $this->_appli;
+			
+			ob_start();
+			require_once '../Applications/'.$appliDir.'/Partials/'.$namePartial.'.phtml';
+			$partial = ob_get_clean();
+			
+			return $partial;
+		}
+		
+		/**
+		 * Charge une actionavec sa vue
+		 * @param string $namePartial
+		 * @param string $controller
+		 * @param string $action
+		 * @return string
+		 */
+		public function action($action, $controller){
+				
+			if($controller != null && $action != null){
+				$nameController = 'Applications_Front_Controllers_'.$controller.'Controller';
+				$Controllers = new $nameController();
+		
+				$nameMethod = $action.'Action';
+				$Controllers->$nameMethod();
+		
+				$var = $Controllers->getVars();
+				if(is_array($var)){
+					extract($var);
+				}
+			}
+				
+			ob_start();
+			require_once '../Applications/'.$this->_appli.'/Views/'.$controller.'/'.$action.'.phtml';
+			$actions = ob_get_clean();
+				
+			return $actions;
 		}
 		
 		/**
@@ -182,12 +240,18 @@
 			extract($this->_vars);
 			
 			//Charge et garde en mémoire le contenu de la vue
-			//ob_start();		
-	        require_once $this->_view;
-	        $content = ob_get_clean();
+			//ob_start();
+			
+			if($this->_renderer == true){
+				require_once $this->_view;
+				if($this->_rendererLayout == true){
+					$content = ob_get_clean();
+					require_once $this->_layout;
+				}
+			}
 	        
 	        //Charge le layout où il y a le content de la vue
 	       // ob_start();      
-	        require_once $this->_layout;	
+	        
 		}
 	}

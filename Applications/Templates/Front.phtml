@@ -3,24 +3,24 @@
 	<head>
 		<?php echo $this->headTitle(),PHP_EOL;?>
 		<?php echo $this->headMeta(),PHP_EOL;?>
-
-		<link rel="stylesheet" type="text/css" media="screen" href="Css/Front.css" />
 		<?php echo $this->headLink(),PHP_EOL;?>
 		<?php echo $this->headScript(),PHP_EOL;?>
-		
 	</head>
 	<body>
-		<header>
-			<ul>
-				<li>test</li>
-			</ul>
-		</header>
 		
-		<section id="content" >
-			<?php  echo $content; ?>
+		<header id="Header"><?php echo $this->partial('Menu');?></header>
+		
+		<section id="Body">
+			<section id="Explorer">
+				<div id="SsExplorer"><?php echo $this->action('menu', 'Index')?></div>
+			</section>
+			
+			<section id="Content">
+				<div id="SsContent"><?php  echo $content; ?></div>
+			</section>
 		</section>
 		
-		<footer>
-		</footer>
+		<footer id="Footer"></footer>
+		
 	</body>
 </html>

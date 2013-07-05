@@ -27,8 +27,10 @@
 		 * Retourne un message d'erreur particulier
 		 * @param String $key
 		 */
-		public function getError($key){
-			return $this->_resource[$key];
+		public function getError($key, $var = null){
+			
+			$error = $this->_resource[$key];
+			return ($var != null) ? str_replace('%var%', $var, $error) : $error;
 		}
 		
 	}

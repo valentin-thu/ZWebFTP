@@ -1,0 +1,6 @@
+<div id="PartialMenu">
+	<span class="PartialMenu-spanLogin">Bonjour <strong><?php echo ucfirst(Core_Sessions::get('identity', 'AUTH')->getStorage()->login_users); ?></strong></span>
+	<a href="#modalFormFTP" title="Se connecter à un serveur" data-modal="open"><span class="PartialMenu-icoFTP"></span></a>
+</div>
+
+<?php echo $this->action('connexion', 'Ftp');?>

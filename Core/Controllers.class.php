@@ -11,6 +11,8 @@
 		private $_post;
 		private $_layout;
 		private $_vars;
+		private $_renderer = true;
+		private $_rendererLayout = true;
 		
 		public function __construct(){
 			$this->_get = $_GET;
@@ -99,6 +101,26 @@
 				header('Location: '.$uri);
 				exit;
 			}
+		}
+		
+		public function noRenderer($view, $layout = null){
+			if($layout !== null){
+				$this->_rendererLayout = $layout;
+			}else{
+				$this->_renderer = $view;
+			}
+		}
+		
+		public function isRenderer(){
+			return $this->_renderer;
+		}
+		
+		public function isRendererLayout(){
+			return $this->_rendererLayout;
+		}
+		
+		public function setRenderer($bool){
+			$this->_renderer = $bool;
 		}
 		
 		/**

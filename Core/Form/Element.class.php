@@ -59,6 +59,18 @@
 		}
 		
 		/**
+		 * Ajoute une class à l'élément
+		 * @param string $class
+		 */
+		public function addClass($class){
+			if($this->hasAttrib('class')){
+				$classElts = $this->getAttrib('class');
+				$classElts .= ' '.$class;
+				$this->setAttrib('class', $classElts);
+			}
+		}
+		
+		/**
 		 * Retourne la valeur d'un élément
 		 * @return string or NULL
 		 */
@@ -127,7 +139,7 @@
 		public function addValidator($validator, $add2 = null){
 			$validatorClass = 'Core_Form_Validator_'.$validator;
 			if(class_exists($validatorClass, true)){
-				if($validator == 'DbLogin'){
+				if($add2 != null){
 					$theValidator = new $validatorClass($this, $add2);
 					array_push($this->_validators, $theValidator);
 				}else{
