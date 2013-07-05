@@ -10,3 +10,4 @@
 	
 	$Appli = new Core_Application('Front');
 	$Appli->run();
+	
