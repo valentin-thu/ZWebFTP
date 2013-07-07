@@ -1,5 +1,7 @@
 @CHARSET "UTF-8";
 
+ul{margin:0;}
+
 #Header{margin:0;position:relative;z-index:3;height:55px;box-shadow: 0px 5px 15px 1px #000000;background-image: -moz-linear-gradient(top, #404040, #202020);background-image: -ms-linear-gradient(top, #404040, #202020);background-image: -o-linear-gradient(top, #404040, #202020);background-image: -webkit-gradient(linear, center top, center bottom, from(#404040), to(#202020));background-image: -webkit-linear-gradient(top, #404040, #202020);background-image: linear-gradient(top, #404040, #202020);border-top:1px red solid;border-bottom:1px #000 solid;}
 
 #Body{min-height:65%;height:65%;max-height:88%;	min-width:100%;width:100%;max-width:100%;}

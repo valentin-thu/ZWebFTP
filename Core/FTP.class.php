@@ -64,6 +64,7 @@
 			foreach($array as $file){
 				
 				if(strpos($file, '/') === false){
+					
 					if($directory != null){
 						$file = $directory.'/'.$file;
 					}
@@ -83,12 +84,15 @@
 		}
 		
 		public function nlistExplorer($directory = null, $data = null){
-			$this->nlist($directory);
-		
+			$this->nlist(html_entity_decode($directory));
+			
 			sort($this->_listeDossier);
 			
 			$indice = 0;
 			$max = count($this->_listeDossier);
+			
+			$this->_list .= '<ul style="-webkit-padding-start:0px;list-style:none;">';
+			
 			foreach($this->_listeDossier as $dir){
 				
 				if(strpos($dir, '/') === false){
@@ -148,13 +152,13 @@
 					}
 				}
 				
-				$this->_list .= '<tr class="exist" data-dossier="'.urlencode($dir).'" data-arbo="'.$dataArbo.'">
-									<td style="height:25px;padding:0;">
-											'.$arbo2.'<img class="ico-ouverture" style="'.$arbo.'cursor:pointer;" onclick="explorerDir(\''.urlencode($dir).'\')" src="Images/Front/ico_plus.png" />
-											<img src="Images/Front/folder.png" style="margin-right:5px;margin-top:4px;" /><span style="position:relative;top:3px;">'.$nameDir[count($nameDir)-1].'</span>
-									</td>
-								</tr>';
+				$this->_list .= '<li class="exist" data-dossier="'.urlencode($dir).'" data-arbo="'.$dataArbo.'">	
+									'.$arbo2.'<img class="ico-ouverture" data-dossier="'.urlencode($dir).'" style="'.$arbo.'cursor:pointer;" onclick="explorerDir(\''.urlencode($dir).'\')" src="Images/Front/ico_plus.png" />
+									<img src="Images/Front/folder.png" style="margin-right:5px;margin-top:4px;" /><span style="position:relative;top:3px;" data-dossier="'.urlencode($dir).'">'.$nameDir[count($nameDir)-1].'</span>
+								</li>';
 			}
+			
+			$this->_list .= '</ul>';
 		}
 		
 		public function nlistFiles($directory = null){
