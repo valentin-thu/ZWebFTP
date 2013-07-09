@@ -11,7 +11,7 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 		if(Core_Sessions::get('ftp', 'FTP') !== null){
 			$ftp = Core_Sessions::get('ftp', 'FTP');
 			$ftp->connect();
-			$ftp->nlistFiles();
+			$ftp->nlistFiles(null, true);
 			$ftp->close();
 			$this->assign('files', $ftp->getList());
 		}else{
@@ -27,8 +27,10 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 			$ftp->nlistExplorer();
 			$ftp->close();
 			$this->assign('menu', $ftp->getList());
+			$this->assign('host', $ftp->getHost());
 		}else{
 			$this->assign('menu', '');
+			$this->assign('host', 'Pas de serveur');
 		}
 	}
 	
