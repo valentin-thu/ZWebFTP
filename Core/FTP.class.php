@@ -215,11 +215,19 @@
 								<th>Nom du fichier</th>
 								<th style="width:10%">Poids</th>
 								<th style="width:13%">Type de fichier</th>
+								<th style="width:13%">Les permissions</th>
 								<th style="width:17%">Dernière modification</th>
 								<th style="width:15%">Propriétaire/Groupe</th>
 							</tr>';
 			
 			foreach($this->_listeDossier as $dir => $value){
+				
+				if(strpos($dir, '/') === false){
+					if($directory != null){
+						$dir = $directory.'/'.$dir;
+					}
+				}
+				
 				$nameDir = explode('/', $dir);
 				
 				$annee = (strpos($value['heure'], ':') === false) ? ' '.$value['heure'] : '';
@@ -242,11 +250,44 @@
 					case 'Dec' : $mois = 'Décembre';break;
 				}
 				
+				$droits = $value['droits'];
+				$chmod = '';
+				$calcul = 0;
+				$j = 0;
+				for($i=1;$i<10;$i++){
+					$j++;
+						
+					if($j == 4){
+						$chmod .= $calcul;
+						$calcul = 0;
+						$j = 1;
+					}
+						
+					if($droits[$i] == 'r'){
+						$calcul += 4;
+					}else{
+						if($droits[$i] == 'w'){
+							$calcul += 2;
+						}else{
+							if($droits[$i] == 'x'){
+								$calcul += 1;
+							}
+						}
+					}
+						
+					if($i == 9){
+						$chmod .= $calcul;
+					}
+					
+				}
+				
+				
 				if($nameDir[count($nameDir)-1] == '.' || $nameDir[count($nameDir)-1] == '..') continue;
 				$this->_list .= '<tr style="border-bottom:1px #000 solid;">
-									<td style="padding:10px;"><img style="margin-right:10px;" src="/Images/Front/folder.png" alt=""/>'.$nameDir[count($nameDir)-1].'</td>
+									<td style="padding:10px;"><img style="margin-right:10px;" src="/Images/Front/folder.png" alt=""/><span style="cursor:pointer;-webkit-user-select:none;" ondblclick="getFiles(\''.urlencode($dir).'\')">'.$nameDir[count($nameDir)-1].'</span></td>
 									<td style="text-align:center;"></td>
 									<td style="text-align:center;">Répertoire</td>
+									<td style="text-align:center;">'.$value['droits'].' ('.$chmod.')</td>
 									<td style="text-align:center;">'.$jour.' '.$mois.$annee.$heure.'</td>
 									<td style="text-align:center;">'.$value['user'].' / '.$value['group'].'</td>
 								</tr>';
@@ -259,6 +300,38 @@
 				$heure = (strpos($value['heure'], ':') !== false) ? ' '.date('Y').' à '.$value['heure'] : '';
 				
 				$jour = ($value['jour'] < 10) ? '0'.$value['jour'] : $value['jour'];
+				
+				$droits = $value['droits'];
+				
+				$chmod = '';
+				$calcul = 0;
+				$j = 0;
+				for($i=1;$i<10;$i++){
+					$j++;
+						
+					if($j == 4){
+						$chmod .= $calcul;
+						$calcul = 0;
+						$j = 1;
+					}
+						
+					if($droits[$i] == 'r'){
+						$calcul += 4;
+					}else{
+						if($droits[$i] == 'w'){
+							$calcul += 2;
+						}else{
+							if($droits[$i] == 'x'){
+								$calcul += 1;
+							}
+						}
+					}
+						
+					if($i == 9){
+						$chmod .= $calcul;
+					}
+					
+				}
 				
 				switch($value['mois']){
 					case 'Jan' : $mois = 'Janvier';break;
@@ -279,6 +352,7 @@
 									<td style="padding:10px;"><img style="margin-right:10px;" src="/Images/Front/file.png" alt=""/>'.$nameFile[count($nameFile)-1].'</td>
 									<td style="text-align:center;">'._unity($value['size']).'</td>
 									<td style="text-align:center;">Fichier</td>
+									<td style="text-align:center;">'.$value['droits'].' ('.$chmod.')</td>
 									<td style="text-align:center;">'.$jour.' '.$mois.$annee.$heure.'</td>
 									<td style="text-align:center;">'.$value['user'].' / '.$value['group'].'</td>
 								</tr>';
