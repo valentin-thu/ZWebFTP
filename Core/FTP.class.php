@@ -19,6 +19,8 @@
 		
 		private $_nb = 0;
 		
+		private $_arrayRecap = array();
+		
 		public function __construct($host = null, $port = null, $login = null, $password = null){
 			$this->_host = ($host != null) ? $host : '';
 			$this->_port = ($port != null) ? $port : '';
@@ -44,9 +46,10 @@
 		 * @return array
 		 */
 		public function rawlist($directory = null){
-			if (is_array($children = @ftp_rawlist($this->_connexion, $directory))) {
+			ftp_chdir($this->_connexion, $directory);
+			if (is_array($children = @ftp_rawlist($this->_connexion, '.'))) {
 				$items = array();
-			
+				
 				foreach ($children as $child) {
 					$chunks = preg_split("/\s+/", $child);
 					list($item['droits'], $item['index'], $item['user'], $item['group'], $item['size'], $item['mois'], $item['jour'], $item['heure']) = $chunks;
@@ -108,6 +111,14 @@
 			$this->nlist(html_entity_decode($directory));
 			
 			sort($this->_listeDossier);
+			
+			if($directory == null) {
+				$this->_arrayRecap['/'] = $this->_listeDossier;
+			}else{
+				$this->_arrayRecap[$directory] = $this->_listeDossier;
+			}
+			
+			Core_Sessions::set('ftp', $this, 'FTP');
 			
 			$indice = 0;
 			$max = count($this->_listeDossier);
@@ -202,6 +213,8 @@
 		
 		public function nlistFiles($directory = null, $start = false){
 			$this->rawlistFiles($directory);
+			
+			
 			
 			ksort($this->_listeDossier);
 			ksort($this->_listeFichier);
@@ -365,7 +378,15 @@
 			$array = ftp_nlist($this->_connexion, $directory);
 			$return = false;
 			
+			
+			
 			foreach($array as $file){
+				
+				if(strpos($file, '/') === false){
+					if($directory != null){
+						$file = $directory.'/'.$file;
+					}
+				}
 			
 				$dir = explode('/', $file);
 				if($dir[count($dir)-1] == '.' || $dir[count($dir)-1] == '..') continue;
@@ -379,11 +400,27 @@
 		}
 		
 		public function connect(){
+			$this->_list = '';
+			$this->_listeDossier = array();
+			$this->_listeFichier = array();
+			$this->_nb = 0;
+			
+				
+			
 			$connexion = ftp_connect($this->_host, $this->_port);//$connexion = ;
 			ftp_pasv($connexion, false);
 			if(ftp_login($connexion, $this->_login, $this->_password)){
 				$this->_connexion = $connexion;
+				
 			}
+		}
+		
+		public function getRecap(){
+			return $this->_arrayRecap;
+		}
+		
+		public function resetRecap(){
+			$this->_arrayRecap = array();
 		}
 		
 		public function close(){

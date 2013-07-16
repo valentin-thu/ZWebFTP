@@ -23,6 +23,7 @@ class Applications_Front_Controllers_IndexController extends Core_Controllers{
 	public function menuAction(){
 		if(Core_Sessions::get('ftp', 'FTP') !== null){
 			$ftp = Core_Sessions::get('ftp', 'FTP');
+			$ftp->resetRecap();
 			$ftp->connect();
 			$ftp->nlistExplorer();
 			$ftp->close();
