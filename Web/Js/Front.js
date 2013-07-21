@@ -29,11 +29,76 @@
 			}
 		});
 		
+		$('body').on('click', '.ulFilAriane', function(){
+			var chemin = '';
+			var indice = 0;
+			
+			if(window.getSelection().extentOffset == 0){
+
+				childrenLi = $(this).children('li');
+				
+				if($(this).children('input').size() == 0){
+					childrenLi.each(function(){
+						
+						$(this).hide();
+						
+						indice++;
+						if(indice == 2){
+							chemin += '/';
+							indice = 0;
+						}else{
+							chemin += $(this).text();
+						}
+					});
+					
+					navbar = '<input class="inputNavBar" type="text" value="'+chemin+'"/>';
+					
+					$(this).append(navbar);
+					
+					childrenInput = $(this).children('input');
+					
+					childrenInput.focus(function(){
+						$(this).keydown(function(evt){
+							if(evt.keyCode == 13){
+								
+								address = $(this).val();
+								address = encodeURIComponent(address.substr(1));
+								address = address.replace(/%20/g,'+');
+								
+								tabAdress = address.split('%2F');
+								chemin2 = '';
+								
+								for(i=0;i<tabAdress.length;i++){
+									if(chemin2 != ''){
+										chemin2 += '%2F';
+									}
+									
+									chemin2 += tabAdress[i];
+									
+									bool = (i == (tabAdress.length-1)) ? true : false;
+									
+									getFiles(chemin2, bool);
+								}
+								
+								
+							}
+						});
+					}).select();
+					
+					childrenInput.blur(function(){
+						childrenLi.each(function(){
+							$(this).show();
+						});
+						childrenInput.remove();
+					})
+				}
+			}
+		});
+		
 	});
 	
 	function explorerDir($directory, $boolOpen){
-		
-	
+
 		if($('img[data-dossier="'+$directory+'"]').hasClass('open')){
 			if($boolOpen != false){
 				if($('img[data-dossier="'+$directory+'"]').attr('src') == 'Images/Front/ico_moins.png'){
@@ -54,8 +119,28 @@
 			$.ajax({
 				type : 'POST',
 				url : 'explorer.html',
+				async: false,
 				data : 'dir='+$directory+'&data='+$('li[data-dossier="'+$directory+'"]').data('arbo'),
 				success : function (msg){
+					if(msg == ''){
+						if($('li[data-dossier="'+$directory+'"]').data('arbo').toString().indexOf('-') != -1){
+							indiceArbo = $('li[data-dossier="'+$directory+'"]').data('arbo').split('-');
+							valueIndiceArbo = indiceArbo[(indiceArbo.length)-1];
+						}else{
+							valueIndiceArbo = $('li[data-dossier="'+$directory+'"]').data('arbo');
+						}
+						
+						if(valueIndiceArbo == 0){
+							imageNodir = 'ico_nodir_fin';
+						}else{
+							imageNodir = 'ico_nodir';
+						}
+						
+						$('img[data-dossier="'+$directory+'"]').attr('src', 'Images/Front/'+imageNodir+'.png');
+						$('img[data-dossier="'+$directory+'"]').prop('onclick', null);
+						$('img[data-dossier="'+$directory+'"]').removeAttr('onclick');
+						$('img[data-dossier="'+$directory+'"]').css({'cursor':'default'});
+					}
 					$('li[data-dossier="'+$directory+'"] ul').remove();
 					$('li[data-dossier="'+$directory+'"]').append(msg);
 					$('li[data-dossier="'+$directory+'"] ul').hide();
@@ -80,7 +165,7 @@
 		
 	}
 	
-	function getFiles($directory){
+	function getFiles($directory, $boolOpen){
 		
 		$('#SsExplorer span').css({'font-weight':'normal'});
 		$('span[data-dossier="'+$directory+'"]').css({'font-weight' : 'bold'});
@@ -94,6 +179,7 @@
 				type : 'POST',
 				url : 'files.html',
 				data : 'dir='+$directory,
+				async:false,
 				success : function (msg){
 					
 					$('.div-mask-files').fadeOut();
@@ -104,8 +190,14 @@
 						});
 						$('.div-mask-files').remove();
 						$('.files').prepend(msg);
-						$('div[data-dossier="'+$directory+'"]').animate({'width':'100%'});
-						$('div[data-dossier="'+$directory+'"]').addClass('open');
+						
+						
+						
+						if($boolOpen != false){
+							
+							$('div[data-dossier="'+$directory+'"]').animate({'width':'100%'});
+							$('div[data-dossier="'+$directory+'"]').addClass('open');
+						}
 					}, 500);
 					
 				}

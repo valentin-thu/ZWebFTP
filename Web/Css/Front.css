@@ -23,5 +23,8 @@ ul{margin:0;}
 
 #Content{position:relative;z-index:1;height:100%;width:85%;max-width:85%;min-width:65%;float:left;overflow:auto;}
 	#SsContent{margin-top:20px;margin-left:10px;height:90%;}
+	
+	input.inputNavBar{border:none;width:99%;height:18px;margin-top:2px;box-shadow:none;}
+	input.inputNavBar:focus{outline:none;box-shadow:none;}
 
 #Footer{min-height:5.4%;height:5.4%;max-height:28%;min-width:100%;width:100%;max-width:100%;border-top:3px #b9b9b9 solid;}

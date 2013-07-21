@@ -4843,6 +4843,9 @@ a.thumbnail:focus {
   display: none;
   float: left;
   min-width: 160px;
+ min-height:10px;
+ max-height:300px;
+ overflow:auto;
   padding: 5px 0;
   margin: 2px 0 0;
   list-style: none;

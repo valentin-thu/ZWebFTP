@@ -17,6 +17,8 @@
 		private $_listeDossier = array();
 		private $_list = '';
 		
+		private $_exist = true;
+		
 		private $_nb = 0;
 		
 		private $_arrayRecap = array();
@@ -46,20 +48,27 @@
 		 * @return array
 		 */
 		public function rawlist($directory = null){
-			ftp_chdir($this->_connexion, $directory);
-			if (is_array($children = @ftp_rawlist($this->_connexion, '.'))) {
-				$items = array();
-				
-				foreach ($children as $child) {
-					$chunks = preg_split("/\s+/", $child);
-					list($item['droits'], $item['index'], $item['user'], $item['group'], $item['size'], $item['mois'], $item['jour'], $item['heure']) = $chunks;
-					$item['type'] = $chunks[0]{0} === 'd' ? 'directory' : 'file';
-					array_splice($chunks, 0, 8);
-					$items[implode(" ", $chunks)] = $item;
-				}
 			
-				return $items;
+			Core_Debug::dump($directory);
+			
+			if(@ftp_chdir($this->_connexion, html_entity_decode($directory))){
+				if (is_array($children = @ftp_rawlist($this->_connexion, '.'))) {
+					$items = array();
+					
+					foreach ($children as $child) {
+						$chunks = preg_split("/\s+/", $child);
+						list($item['droits'], $item['index'], $item['user'], $item['group'], $item['size'], $item['mois'], $item['jour'], $item['heure']) = $chunks;
+						$item['type'] = $chunks[0]{0} === 'd' ? 'directory' : 'file';
+						array_splice($chunks, 0, 8);
+						$items[implode(" ", $chunks)] = $item;
+					}
+				
+					return $items;
+				}else{
+					return null;
+				}
 			}else{
+				Core_Debug::dump('plpo');
 				return null;
 			}
 		}
@@ -67,12 +76,16 @@
 		public function rawlistFiles($directory = null){
 			$items = $this->rawlist($directory);
 			
-			foreach($items as $item=>$value){
-				if($value['type'] == 'directory'){
-					$this->_listeDossier[$item] = $items[$item];
-				}else{
-					$this->_listeFichier[$item] = $items[$item];
+			if($items !== null){
+				foreach($items as $item=>$value){
+					if($value['type'] == 'directory'){
+						$this->_listeDossier[$item] = $items[$item];
+					}else{
+						$this->_listeFichier[$item] = $items[$item];
+					}
 				}
+			}else{
+				$this->_exist = false;
 			}
 		}
 		
@@ -123,7 +136,9 @@
 			$indice = 0;
 			$max = count($this->_listeDossier);
 			
-			$this->_list .= '<ul style="-webkit-padding-start:0px;list-style:none;">';
+			
+			
+			$this->_list .= ($max > 0) ? '<ul style="-webkit-padding-start:0px;list-style:none;">' : '';
 			
 			foreach($this->_listeDossier as $dir){
 				
@@ -133,17 +148,10 @@
 					}
 				}
 				
-				if($this->hasDir($dir)){
-					$srcImg = 'ico_plus';
-					$onclick = 'onclick="explorerDir(\''.urlencode($dir).'\')"';
-					$cursor = 'cursor:pointer;';
-				}else{
-					$srcImg = 'ico_nodir';
-					$onclick = '';
-					$cursor = '';
-				}
-				
-				
+				$srcImg = 'ico_plus';
+				$onclick = 'onclick="explorerDir(\''.urlencode($dir).'\')"';
+				$cursor = 'cursor:pointer;';
+			
 				$indice++;
 				
 				if($max == $indice){
@@ -202,183 +210,254 @@
 					}
 				}
 				
-				$this->_list .= '<li class="exist" data-dossier="'.urlencode($dir).'" data-arbo="'.$dataArbo.'">	
-									'.$arbo2.'<img class="ico-ouverture" data-dossier="'.urlencode($dir).'" style="'.$arbo.$cursor.'" '.$onclick.' src="Images/Front/'.$srcImg.'.png" />
-									<img src="Images/Front/folder.png" style="margin-right:5px;margin-top:4px;" /><span onclick="getFiles(\''.urlencode($dir).'\')" style="cursor:pointer;position:relative;top:3px;" data-dossier="'.urlencode($dir).'">'.$nameDir[count($nameDir)-1].'</span>
+				$this->_list .= '<li class="exist" data-dossier="'.urlencode(html_entity_decode($dir)).'" data-arbo="'.$dataArbo.'">	
+									'.$arbo2.'<img class="ico-ouverture" data-dossier="'.urlencode(html_entity_decode($dir)).'" style="'.$arbo.$cursor.'" '.$onclick.' src="Images/Front/'.$srcImg.'.png" />
+									<img src="Images/Front/folder.png" style="margin-right:5px;margin-top:4px;" /><span onclick="getFiles(\''.urlencode(html_entity_decode($dir)).'\')" style="cursor:pointer;position:relative;top:3px;" data-dossier="'.urlencode(html_entity_decode($dir)).'">'.$nameDir[count($nameDir)-1].'</span>
 								</li>';
 			}
 			
-			$this->_list .= '</ul>';
+			$this->_list .= ($max > 0) ? '</ul>' : '';
 		}
 		
 		public function nlistFiles($directory = null, $start = false){
 			$this->rawlistFiles($directory);
 			
-			
-			
 			ksort($this->_listeDossier);
 			ksort($this->_listeFichier);
 			
 			$width = ($start == false) ? '0px' : '100%';
+			
+			$this->_list .= '<div style="float:left;width:'.$width.';" data-dossier="'.urlencode(html_entity_decode($directory)).'">';
+			
+			if($this->_exist !== false){
 
-			$this->_list .= '<div style="float:left;width:'.$width.';" data-dossier="'.urlencode($directory).'">';
-			$this->_list .= '<table style="width:100%;">';
-			
-			$this->_list .= '<tr style="border-bottom:2px #000 solid;">
-								<th>Nom du fichier</th>
-								<th style="width:10%">Poids</th>
-								<th style="width:13%">Type de fichier</th>
-								<th style="width:13%">Les permissions</th>
-								<th style="width:17%">Dernière modification</th>
-								<th style="width:15%">Propriétaire/Groupe</th>
-							</tr>';
-			
-			foreach($this->_listeDossier as $dir => $value){
+				$this->_list .= $this->filAriane($directory);
 				
-				if(strpos($dir, '/') === false){
-					if($directory != null){
-						$dir = $directory.'/'.$dir;
-					}
-				}
+				$this->_list .= '<table style="width:100%;">';
 				
-				$nameDir = explode('/', $dir);
+				$this->_list .= '<tr style="border-bottom:2px #000 solid;">
+									<th>Nom du fichier</th>
+									<th style="width:10%">Poids</th>
+									<th style="width:13%">Type de fichier</th>
+									<th style="width:13%">Les permissions</th>
+									<th style="width:17%">Dernière modification</th>
+									<th style="width:15%">Propriétaire/Groupe</th>
+								</tr>';
 				
-				$annee = (strpos($value['heure'], ':') === false) ? ' '.$value['heure'] : '';
-				$heure = (strpos($value['heure'], ':') !== false) ? ' '.date('Y').' à '.$value['heure'] : '';
-				
-				$jour = ($value['jour'] < 10) ? '0'.$value['jour'] : $value['jour'];
-				
-				switch($value['mois']){
-					case 'Jan' : $mois = 'Janvier';break;
-					case 'Feb' : $mois = 'Février';break;
-					case 'Mar' : $mois = 'Mars';break;
-					case 'Apr' : $mois = 'Avril';break;
-					case 'May' : $mois = 'Mai';break;
-					case 'Jun' : $mois = 'Juin';break;
-					case 'Jul' : $mois = 'Juillet';break;
-					case 'Aug' : $mois = 'Août';break;
-					case 'Sep' : $mois = 'Septembre';break;
-					case 'Oct' : $mois = 'Octobre';break;
-					case 'Nov' : $mois = 'Novembre';break;
-					case 'Dec' : $mois = 'Décembre';break;
-				}
-				
-				$droits = $value['droits'];
-				$chmod = '';
-				$calcul = 0;
-				$j = 0;
-				for($i=1;$i<10;$i++){
-					$j++;
-						
-					if($j == 4){
-						$chmod .= $calcul;
-						$calcul = 0;
-						$j = 1;
-					}
-						
-					if($droits[$i] == 'r'){
-						$calcul += 4;
-					}else{
-						if($droits[$i] == 'w'){
-							$calcul += 2;
-						}else{
-							if($droits[$i] == 'x'){
-								$calcul += 1;
-							}
+				foreach($this->_listeDossier as $dir => $value){
+					
+					if(strpos($dir, '/') === false){
+						if($directory != null){
+							$dir = $directory.'/'.$dir;
 						}
 					}
-						
-					if($i == 9){
-						$chmod .= $calcul;
+					
+					$nameDir = explode('/', $dir);
+					
+					$annee = (strpos($value['heure'], ':') === false) ? ' '.$value['heure'] : '';
+					$heure = (strpos($value['heure'], ':') !== false) ? ' '.date('Y').' à '.$value['heure'] : '';
+					
+					$jour = ($value['jour'] < 10) ? '0'.$value['jour'] : $value['jour'];
+					
+					switch($value['mois']){
+						case 'Jan' : $mois = 'Janvier';break;
+						case 'Feb' : $mois = 'Février';break;
+						case 'Mar' : $mois = 'Mars';break;
+						case 'Apr' : $mois = 'Avril';break;
+						case 'May' : $mois = 'Mai';break;
+						case 'Jun' : $mois = 'Juin';break;
+						case 'Jul' : $mois = 'Juillet';break;
+						case 'Aug' : $mois = 'Août';break;
+						case 'Sep' : $mois = 'Septembre';break;
+						case 'Oct' : $mois = 'Octobre';break;
+						case 'Nov' : $mois = 'Novembre';break;
+						case 'Dec' : $mois = 'Décembre';break;
 					}
 					
-				}
-				
-				
-				if($nameDir[count($nameDir)-1] == '.' || $nameDir[count($nameDir)-1] == '..') continue;
-				$this->_list .= '<tr style="border-bottom:1px #000 solid;">
-									<td style="padding:10px;"><img style="margin-right:10px;" src="/Images/Front/folder.png" alt=""/><span style="cursor:pointer;-webkit-user-select:none;" ondblclick="getFiles(\''.urlencode($dir).'\')">'.$nameDir[count($nameDir)-1].'</span></td>
-									<td style="text-align:center;"></td>
-									<td style="text-align:center;">Répertoire</td>
-									<td style="text-align:center;">'.$value['droits'].' ('.$chmod.')</td>
-									<td style="text-align:center;">'.$jour.' '.$mois.$annee.$heure.'</td>
-									<td style="text-align:center;">'.$value['user'].' / '.$value['group'].'</td>
-								</tr>';
-			}
-				
-			foreach($this->_listeFichier as $file => $value){
-				$nameFile = explode('/', $file);
-				
-				$annee = (strpos($value['heure'], ':') === false) ? ' '.$value['heure'] : '';
-				$heure = (strpos($value['heure'], ':') !== false) ? ' '.date('Y').' à '.$value['heure'] : '';
-				
-				$jour = ($value['jour'] < 10) ? '0'.$value['jour'] : $value['jour'];
-				
-				$droits = $value['droits'];
-				
-				$chmod = '';
-				$calcul = 0;
-				$j = 0;
-				for($i=1;$i<10;$i++){
-					$j++;
-						
-					if($j == 4){
-						$chmod .= $calcul;
-						$calcul = 0;
-						$j = 1;
-					}
-						
-					if($droits[$i] == 'r'){
-						$calcul += 4;
-					}else{
-						if($droits[$i] == 'w'){
-							$calcul += 2;
+					$droits = $value['droits'];
+					$chmod = '';
+					$calcul = 0;
+					$j = 0;
+					for($i=1;$i<10;$i++){
+						$j++;
+							
+						if($j == 4){
+							$chmod .= $calcul;
+							$calcul = 0;
+							$j = 1;
+						}
+							
+						if($droits[$i] == 'r'){
+							$calcul += 4;
 						}else{
-							if($droits[$i] == 'x'){
-								$calcul += 1;
+							if($droits[$i] == 'w'){
+								$calcul += 2;
+							}else{
+								if($droits[$i] == 'x'){
+									$calcul += 1;
+								}
 							}
 						}
-					}
+							
+						if($i == 9){
+							$chmod .= $calcul;
+						}
 						
-					if($i == 9){
-						$chmod .= $calcul;
 					}
 					
+					
+					if($nameDir[count($nameDir)-1] == '.' || $nameDir[count($nameDir)-1] == '..') continue;
+					$this->_list .= '<tr style="border-bottom:1px #000 solid;">
+										<td style="padding:10px;"><img style="margin-right:10px;" src="/Images/Front/folder.png" alt=""/><span style="cursor:pointer;-webkit-user-select:none;" ondblclick="getFiles(\''.urlencode(html_entity_decode($dir)).'\')">'.$nameDir[count($nameDir)-1].'</span></td>
+										<td style="text-align:center;"></td>
+										<td style="text-align:center;">Répertoire</td>
+										<td style="text-align:center;">'.$value['droits'].' ('.$chmod.')</td>
+										<td style="text-align:center;">'.$jour.' '.$mois.$annee.$heure.'</td>
+										<td style="text-align:center;">'.$value['user'].' / '.$value['group'].'</td>
+									</tr>';
 				}
-				
-				switch($value['mois']){
-					case 'Jan' : $mois = 'Janvier';break;
-					case 'Feb' : $mois = 'Février';break;
-					case 'Mar' : $mois = 'Mars';break;
-					case 'Apr' : $mois = 'Avril';break;
-					case 'May' : $mois = 'Mai';break;
-					case 'Jun' : $mois = 'Juin';break;
-					case 'Jul' : $mois = 'Juillet';break;
-					case 'Aug' : $mois = 'Août';break;
-					case 'Sep' : $mois = 'Septembre';break;
-					case 'Oct' : $mois = 'Octobre';break;
-					case 'Nov' : $mois = 'Novembre';break;
-					case 'Dec' : $mois = 'Décembre';break;
+					
+				foreach($this->_listeFichier as $file => $value){
+					$nameFile = explode('/', $file);
+					
+					$annee = (strpos($value['heure'], ':') === false) ? ' '.$value['heure'] : '';
+					$heure = (strpos($value['heure'], ':') !== false) ? ' '.date('Y').' à '.$value['heure'] : '';
+					
+					$jour = ($value['jour'] < 10) ? '0'.$value['jour'] : $value['jour'];
+					
+					$droits = $value['droits'];
+					
+					$chmod = '';
+					$calcul = 0;
+					$j = 0;
+					for($i=1;$i<10;$i++){
+						$j++;
+							
+						if($j == 4){
+							$chmod .= $calcul;
+							$calcul = 0;
+							$j = 1;
+						}
+							
+						if($droits[$i] == 'r'){
+							$calcul += 4;
+						}else{
+							if($droits[$i] == 'w'){
+								$calcul += 2;
+							}else{
+								if($droits[$i] == 'x'){
+									$calcul += 1;
+								}
+							}
+						}
+							
+						if($i == 9){
+							$chmod .= $calcul;
+						}
+						
+					}
+					
+					switch($value['mois']){
+						case 'Jan' : $mois = 'Janvier';break;
+						case 'Feb' : $mois = 'Février';break;
+						case 'Mar' : $mois = 'Mars';break;
+						case 'Apr' : $mois = 'Avril';break;
+						case 'May' : $mois = 'Mai';break;
+						case 'Jun' : $mois = 'Juin';break;
+						case 'Jul' : $mois = 'Juillet';break;
+						case 'Aug' : $mois = 'Août';break;
+						case 'Sep' : $mois = 'Septembre';break;
+						case 'Oct' : $mois = 'Octobre';break;
+						case 'Nov' : $mois = 'Novembre';break;
+						case 'Dec' : $mois = 'Décembre';break;
+					}
+					
+					$this->_list .= '<tr style="border-bottom:1px #000 solid;">
+										<td style="padding:10px;"><img style="margin-right:10px;" src="/Images/Front/file.png" alt=""/>'.$nameFile[count($nameFile)-1].'</td>
+										<td style="text-align:center;">'._unity($value['size']).'</td>
+										<td style="text-align:center;">Fichier</td>
+										<td style="text-align:center;">'.$value['droits'].' ('.$chmod.')</td>
+										<td style="text-align:center;">'.$jour.' '.$mois.$annee.$heure.'</td>
+										<td style="text-align:center;">'.$value['user'].' / '.$value['group'].'</td>
+									</tr>';
 				}
+				$this->_list .= '</table>';
 				
-				$this->_list .= '<tr style="border-bottom:1px #000 solid;">
-									<td style="padding:10px;"><img style="margin-right:10px;" src="/Images/Front/file.png" alt=""/>'.$nameFile[count($nameFile)-1].'</td>
-									<td style="text-align:center;">'._unity($value['size']).'</td>
-									<td style="text-align:center;">Fichier</td>
-									<td style="text-align:center;">'.$value['droits'].' ('.$chmod.')</td>
-									<td style="text-align:center;">'.$jour.' '.$mois.$annee.$heure.'</td>
-									<td style="text-align:center;">'.$value['user'].' / '.$value['group'].'</td>
-								</tr>';
+			}else{
+				$this->_list .= 'Le dossier n\'existe pas';
 			}
-			$this->_list .= '</table>';
+			
 			$this->_list .= '</div>';
+		}
+		
+		public function filAriane($directory = null){
+			 
+			$html = '';
+			
+			$arrayDirectory = explode('/', $directory);
+			$countDirectory = count($arrayDirectory);
+			$nbCurrentDirectory = 0;
+			
+			$html .= '<ul class="ulFilAriane" style="list-style:none;background-color: #fff;height: 32px;margin-left: -9px;padding-left: 10px;box-shadow: inset 0px 0px 3px 1px #bbb;margin-bottom: 20px;">';
+			
+			$chemin = '';
+			
+			foreach($arrayDirectory as $dir){
+				$nbCurrentDirectory++;
+				
+				$chemin .= ($chemin != null) ? '/'.$dir : $dir;
+				
+				if($dir == null){
+					$html .= '<li style="float:left;position:relative;top:4px;cursor:pointer;" onclick="getFiles(\'\')"><img src="/Images/Front/server.png" alt=""/></li>';
+				}else{
+					if($nbCurrentDirectory == 1){
+						$html .= '<li style="float:left;position:relative;top:4px;cursor:pointer;" onclick="getFiles(\'\')"><img src="/Images/Front/server.png" alt=""/></li>';
+						
+						$html .= '<li style="float:left;padding:5px 0px;"><div class="btn-group"><img style="cursor:pointer" src="/Images/Images/ico_arrow_right.png" data-toggle="dropdown"/>'.$this->getFolderBrother('/', $directory, $nbCurrentDirectory).'</div></li>';
+						
+					}
+					
+					$html .= '<li style="float:left;padding:5px 5px;cursor:pointer;" onclick="getFiles(\''.urlencode(html_entity_decode($chemin)).'\')">'.$dir.'</li>';
+					
+					if($nbCurrentDirectory != $countDirectory){
+						$html .= '<li style="float:left;padding:5px 0px;"><div class="btn-group"><img style="cursor:pointer;" src="/Images/Images/ico_arrow_right.png" data-toggle="dropdown"/>'.$this->getFolderBrother($chemin, $directory, $nbCurrentDirectory+1).'</div></li>';
+					}
+				}					
+				
+			}
+			
+			$html .= '</ul>';
+			
+			
+			return $html;
+		}
+		
+		public function getFolderBrother($directory, $current, $indice){
+			$html = '<ul  class="dropdown-menu">';
+			
+			$indice--;
+			$explodeCurrent = explode('/', $current);
+			
+			foreach($this->_arrayRecap[$directory] as $dir){
+				
+				$folder = explode('/', $dir);
+				
+				$theFolder = ($folder[count($folder)-1] == $explodeCurrent[$indice]) ? '<b>'.$folder[count($folder)-1].'</b>' : $folder[count($folder)-1];
+				
+				$chemin = ($directory != '/') ? $directory.'/'.$folder[count($folder)-1] : $folder[count($folder)-1];
+				
+				$html .= '<li onclick="getFiles(\''.urlencode(html_entity_decode($chemin)).'\')"><a href="#">'.$theFolder.'</a></li>';
+			}
+			
+			$html .= '</ul>';
+			
+			return $html;
+			
 		}
 		
 		public function hasDir($directory){
 			$array = ftp_nlist($this->_connexion, $directory);
 			$return = false;
-			
-			
 			
 			foreach($array as $file){
 				
